@@ -11,7 +11,6 @@
 
 #include "gnuboy.h"
 #include "fb.h"
-#include "input.h"
 #include "hw.h"
 
 #include <bitbox.h>
