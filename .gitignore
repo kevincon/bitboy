@@ -20,6 +20,6 @@ roms/*
 src/bitboy.bin
 src/bitboy.elf
 src/bitboy_emu
-src/roms.c
+src/roms.auto.h
 src/build/*
 

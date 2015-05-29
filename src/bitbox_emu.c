@@ -1,3 +1,4 @@
+#include "bitbox.h"
 #include "gnuboy.h"
 #include "defs.h"
 #include "regs.h"
@@ -8,8 +9,7 @@
 #include "lcd.h"
 #include "rtc.h"
 #include "rc.h"
-
-#include "bitbox.h"
+#include "roms.h"
 
 /*
 static int framelen = 16743;
@@ -20,8 +20,6 @@ void emu_frame();
 void emu_line(); // in lcd
 void emu_init(int);
 void gamepad_poll();
-
-extern int bitbox_rom_load(int rom_id);
 
 void game_init()
 {
@@ -93,7 +91,7 @@ void emu_init(int game_id)
 	vid_preinit();
 
 	// load ROM & load palette 
-	bitbox_rom_load(game_id);
+	rom_load(game_id);
 
 	emu_reset();
 

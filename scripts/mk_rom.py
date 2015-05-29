@@ -36,7 +36,7 @@ for nb, fn in enumerate(sys.argv[1:]) :
 
 	print '// file :',fn
 	print '// name :',names[-1]
-	print 'const uint8_t ROM_%d[%d] = {'%(nb,len(data))
+	print 'static const uint8_t ROM_%d[%d] = {'%(nb,len(data))
 	
 	for i in range(len(data)/ROW) : 
 		print '    '+''.join('0x%02x,'%ord(x) for x in data[i*ROW:i*ROW+ROW] );
@@ -69,7 +69,7 @@ palettes = {
 p = (0x98d0e0, 0x68a0b0, 0x60707C, 0x2C3C3C)
 defp = dict(BG=p,OBJ0=p,OBJ1=p)
 
-print "const uint32_t game_palettes[%s][3][4] = {"%len(names)
+print "static const uint32_t game_palettes[%s][3][4] = {"%len(names)
 for n in names : 
 	p = palettes.get(n,defp)
 	print "    { // %s - %s"%(n,"std palette" if p == defp else "custom palette")
@@ -78,8 +78,8 @@ for n in names :
 	print "    },"
 print "\n};"
 
-print "const char * const game_names[%d] = {"%len(names),",".join('\n    "%s"'%s for s in names),"\n};"
-print "const uint8_t * const game_roms[16] = {"
+print "static const char * const game_names[%d] = {"%len(names),",".join('\n    "%s"'%s for s in names),"\n};"
+print "static const uint8_t * const game_roms[16] = {"
 for nb in range(16) : 
 	if nb<len(names) : 
 		print '  ROM_%s,'%nb
