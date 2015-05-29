@@ -1,7 +1,4 @@
-
-#ifndef __PCM_H__
-#define __PCM_H__
-
+#pragma once
 
 #include "defs.h"
 
@@ -14,8 +11,3 @@ struct pcm
 };
 
 extern struct pcm pcm;
-
-
-#endif
-
-

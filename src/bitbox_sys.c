@@ -12,9 +12,9 @@
 #include "gnuboy.h"
 #include "fb.h"
 #include "hw.h"
+#include "pcm.h"
 
 #include <bitbox.h>
-
 
 #define BITBOX_VIDBUF_LEN (160*144)
 
@@ -40,7 +40,7 @@ void vid_init()
 	// not used
 	fb.pelsize = 1;
 	fb.indexed = 0;
-	
+
 	// set for the line rendering 0BGR, 12 bits
 	// R
 	fb.cc[0].r = 3; // 8 bits->5
@@ -60,7 +60,7 @@ void vid_init()
 	fb.enabled = 1;
 }
 
-/* hw.pad values 
+/* hw.pad values
 #define PAD_RIGHT  0x01
 #define PAD_LEFT   0x02
 #define PAD_UP     0x04
@@ -74,10 +74,10 @@ void vid_init()
 // mapping of bitbox to gnuboy hw.pad bits
 
 const int joystick_pos[8] = {
-	gamepad_right, 
-	gamepad_left, 
+	gamepad_right,
+	gamepad_left,
 	gamepad_up,
-	gamepad_down, 
+	gamepad_down,
 	gamepad_A,
 	gamepad_B,
 	gamepad_select,
@@ -90,7 +90,7 @@ void gamepad_poll()
 	static uint16_t prev_state; // to detect changes since last time.
 	hw.pad=0;
 	for (int i=0;i<8;i++) {
-		if (gamepad_buttons[0] & joystick_pos[i]) 
+		if (gamepad_buttons[0] & joystick_pos[i])
 				hw.pad |= 1<<i;
 	}
 }
@@ -115,25 +115,22 @@ void vid_begin() // as in begin FRAME. We're synced to vsync here
 	uint8_t *tmp;
 
 	// flip draw buffer & display
-	tmp=lcd_display_buffer; 
+	tmp=lcd_display_buffer;
 	lcd_display_buffer=fb.ptr;
 	fb.ptr=tmp; // current drawing framebuffer
 }
 
 void vid_end() // as in end frame
-// 
+//
 {
 	// XXX flip framebuffer (wait vsync ?)
 }
-
-
-#include "pcm.h"
 
 struct pcm pcm;
 
 static volatile int audio_done;
 
-void game_snd_buffer(uint16_t *buffer, int len) 
+void game_snd_buffer(uint16_t *buffer, int len)
 // this callback is called each time we need to fill the buffer
 // should be done within one line (??)
 {
@@ -148,8 +145,8 @@ void game_snd_buffer(uint16_t *buffer, int len)
 void pcm_init()
 {
 	pcm.hz = BITBOX_SAMPLERATE;
-	pcm.stereo = 0; // mono sound 
-	pcm.len = BITBOX_SNDBUF_LEN; // uint8_t samples per 60Hz frame 
+	pcm.stereo = 0; // mono sound
+	pcm.len = BITBOX_SNDBUF_LEN; // uint8_t samples per 60Hz frame
 	pcm.buf = audio_buffer; // dont make a new one
 	pcm.pos = 0;
 	memset(pcm.buf, 0, pcm.len);
@@ -161,25 +158,19 @@ void pcm_init()
 int pcm_submit() // time sync also done here from the buffer which MUST be one frame long.
 {
 	if (pcm.pos < pcm.len) return 1;
-    #ifdef EMULATED
-    while (!audio_done) // attend pile 
+#ifdef EMULATED
+    while (!audio_done) // attend pile
 		SDL_Delay(2);
-	#endif 
+#endif
 
 	audio_done = 0;
 	pcm.pos = 0;
 	return 1;
 }
 
-void pcm_close()
-{
-}
+void pcm_close() {}
 
-
-
-void gb_die(char *fmt, ...)
-{
-
+void gb_die(char *fmt, ...) {
 #ifdef EMULATED
 	va_list ap;
 	va_start(ap, fmt);

@@ -1,3 +1,5 @@
+#include "emu.h"
+
 #include "bitbox.h"
 #include "gnuboy.h"
 #include "defs.h"
@@ -16,11 +18,6 @@ static int framelen = 16743;
 static int framecount;
 */
 
-void emu_frame();
-void emu_line(); // in lcd
-void emu_init(int);
-void gamepad_poll();
-
 void game_init()
 {
 	emu_init(0);
@@ -31,6 +28,7 @@ void game_frame()
 	kbd_emulate_gamepad();
 	emu_frame();
 }
+
 void graph_frame(void) {}
 
 void graph_line()
@@ -53,9 +51,6 @@ void emu_reset()
 	sound_reset();
 }
 
-
-
-
 /* emu_step()
 	make CPU catch up with LCDC
 */
@@ -64,19 +59,18 @@ void emu_step()
 	cpu_emulate(cpu.lcdc);
 }
 
-
 /*
 	Time intervals throughout the code, unless otherwise noted, are
 	specified in double-speed machine cycles (2MHz), each unit
 	roughly corresponds to 0.477us.
-	
+
 	For CPU each cycle takes 2dsc (0.954us) in single-speed mode
 	and 1dsc (0.477us) in double speed mode.
-	
+
 	Although hardware gbc LCDC would operate at completely different
 	and fixed frequency, for emulation purposes timings for it are
 	also specified in double-speed cycles.
-	
+
 	line = 228 dsc (109us)
 	frame (154 lines) = 35112 dsc (16.7ms)
 	of which
@@ -90,7 +84,7 @@ void emu_init(int game_id)
 	pcm_init();
 	vid_preinit();
 
-	// load ROM & load palette 
+	// load ROM & load palette
 	rom_load(game_id);
 
 	emu_reset();
@@ -105,12 +99,12 @@ void emu_init(int game_id)
 void emu_frame(void)
 {
 	/* FRAME BEGIN */
-	
+
 	/* FIXME: djudging by the time specified this was intended
 	to emulate through vblank phase which is handled at the
 	end of the loop. */
 	cpu_emulate(2280);
-	
+
 	/* FIXME: R_LY >= 0; comparsion to zero can also be removed
 	altogether, R_LY is always 0 at this point */
 	while (R_LY > 0 && R_LY < 144)
@@ -118,7 +112,7 @@ void emu_frame(void)
 		/* Step through visible line scanning phase */
 		emu_step();
 	}
-	
+
 	/* VBLANK BEGIN */
 
 	vid_end();
@@ -128,7 +122,7 @@ void emu_frame(void)
 
 	/* pcm_submit() introduces delay, if it fails we use
 	sys_sleep() instead */
-	/* timebase is exclusively done with pcm submit. we shall sync with LCD ! 
+	/* timebase is exclusively done with pcm submit. we shall sync with LCD !
 	if (!pcm_submit())
 	{
 		delay = framelen - sys_elapsed(timer);
@@ -138,7 +132,7 @@ void emu_frame(void)
 	// doevents(); // does not handle extra events
 	gamepad_poll();
 	vid_begin();
-	
+
 	if (!(R_LCDC & 0x80)) {
 		/* LCDC operation stopped */
 		/* FIXME: djudging by the time specified, this is
@@ -146,7 +140,7 @@ void emu_frame(void)
 		phase, even though we are already at vblank here */
 		cpu_emulate(32832);
 	}
-	
+
 	while (R_LY > 0) {
 		/* Step through vblank phase */
 		emu_step();

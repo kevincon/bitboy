@@ -1,6 +1,4 @@
-#ifndef __SOUND_H__
-#define __SOUND_H__
-
+#pragma once
 
 struct sndchan
 {
@@ -13,14 +11,12 @@ struct sndchan
 	int envol, endir;
 };
 
-
 struct snd
 {
 	int rate;
 	struct sndchan ch[4];
 	byte wave[16];
 };
-
 
 extern struct snd snd;
 
@@ -29,5 +25,3 @@ byte sound_read(byte r);
 void sound_dirty();
 void sound_reset();
 void sound_mix();
-
-#endif
