@@ -27,7 +27,7 @@ roms.c: ../roms
 	python ../scripts/mk_rom.py ../roms/* > roms.c 
 
 # menu tilemap from tiled files
-tilemaps.c: *.tmx 
+tilemaps.c: menu.tmx 
 	python ../scripts/mk_tilemaps.py tilemaps $<
 
 # roms to include in th .bin Do not redistribute if not freeware !
