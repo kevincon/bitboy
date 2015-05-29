@@ -2,7 +2,7 @@
 NAME= bitboy
 GAME_C_FILES= bitbox_lcd.c bitbox_emu.c bitbox_sys.c\
 	refresh.c lcdc.c cpu.c mem.c hw.c sound.c rtc.c\
-	roms.c menu.c tilemaps.c 
+	roms.c
  
 # all those have been eliminated	
 #	events.c save.c \

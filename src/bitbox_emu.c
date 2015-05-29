@@ -21,37 +21,23 @@ void emu_line(); // in lcd
 void emu_init(int);
 void gamepad_poll();
 
-void menu_frame();
-void menu_line();
-void menu_setup();
-extern int menu_done, menu_choice;
 extern int bitbox_rom_load(int rom_id);
 
 void game_init()
 {
-	menu_setup();
+	emu_init(0);
 }
 
-int emu_started=0;
 void game_frame()
 {
 	kbd_emulate_gamepad();
-
-	if (emu_started) {
-		emu_frame();
-	} 
-	else
-	{
-		menu_frame();
-		if (menu_done) emu_init(menu_choice);
-	}
+	emu_frame();
 }
 void graph_frame(void) {}
 
 void graph_line()
 {
-	if (emu_started) emu_line();
-	else menu_line();
+	emu_line();
 }
 
 /*
@@ -113,7 +99,6 @@ void emu_init(int game_id)
 
 	vid_begin();
 	lcd_begin();
-	emu_started = 1; // at the end , start line blitting
 }
 
 

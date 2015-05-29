@@ -21,6 +21,5 @@ src/bitboy.bin
 src/bitboy.elf
 src/bitboy_emu
 src/roms.c
-src/tilemaps.c
 src/build/*
 
