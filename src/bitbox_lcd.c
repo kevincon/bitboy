@@ -155,14 +155,14 @@ static byte *vdest;
 
 
 
-inline uint16_t interleave(uint8_t a, uint8_t b)
+static inline uint16_t interleave(uint8_t a, uint8_t b)
 {
 	return morton8[a] | morton8[b]<<1;
 }
 
 
 
-inline int get_bgtileofs(int tile_h, int tile_v)
+static inline int get_bgtileofs(int tile_h, int tile_v)
 {
 	// get absolute tile_id in vram
 	// from horizontal tile ID on line
@@ -181,7 +181,7 @@ inline int get_bgtileofs(int tile_h, int tile_v)
 		return (256 + ((int8_t)(tilemap[tile_id]))); 
 }
 
-inline void blit8(uint8_t *dest,uint8_t a, uint8_t b )
+static inline void blit8(uint8_t *dest,uint8_t a, uint8_t b )
 // blit 8 bits to buf as interlaced 
 // a,b : lsb, msb to blit
 
